@@ -2,8 +2,8 @@ const express = require('express');
 
 const rotas = express();
 
-const { buscarContasBancarias } = require('./controllers/contas-controllers');
+const { listarContasBancarias } = require('./controllers/contas-controllers');
 
-rotas.get('/contas', buscarContasBancarias);
+rotas.get('/contas', listarContasBancarias);
 
 module.exports = rotas;
