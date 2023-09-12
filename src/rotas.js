@@ -5,9 +5,7 @@ const rotas = express();
 const { listarContasBancarias, criarContaBancaria, atualizarContaBancaria, excluirContaBancaria } = require('./controllers/contasControllers');
 const { validadorSenha, verificaBodyPreenchido, verificaIdConta } = require('./middlewares/sistemaBancarioMiddlewares');
 
-rotas.use(validadorSenha);
-
-rotas.get('/contas', listarContasBancarias);
+rotas.get('/contas', validadorSenha, listarContasBancarias);
 
 rotas.post('/contas', verificaBodyPreenchido, criarContaBancaria);
 
