@@ -1,4 +1,4 @@
-const { contas } = require('../bancodedados');
+const { contas } = require('../database/bancodedados');
 
 const buscaCpf = async function (cpf) {
     const cpfEncontrado = contas.find(function (conta) {

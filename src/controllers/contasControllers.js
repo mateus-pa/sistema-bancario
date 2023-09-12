@@ -1,6 +1,6 @@
-const { contas } = require('../bancodedados');
-let { identificadorConta } = require('../bancodedados');
+let { contas, identificadorConta } = require('../database/bancodedados');
 const { buscaCpf, buscaEmail, buscaContaPorId, buscaIndiceCpfIgual, buscaIndiceEmailIgual } = require('../services/funcoesContas');
+const fs = require('fs/promises');
 
 const listarContasBancarias = async function (req, res) {
     return res.status(200).json(contas);
@@ -32,6 +32,12 @@ const criarContaBancaria = async function (req, res) {
         }
 
         contas.push(novaConta);
+
+        const contasString = JSON.stringify(contas);
+        const identificadorContaString = JSON.stringify(identificadorConta);
+
+        await fs.writeFile('./src/database/contas.json', contasString);
+        await fs.writeFile('./src/database/identificadorConta.json', identificadorContaString);
 
         return res.status(201).send();
     } catch (erro) {
@@ -69,6 +75,38 @@ const atualizarContaBancaria = async function (req, res) {
         contaBuscada.usuario.email = email;
         contaBuscada.usuario.senha = senha;
 
+        const contasString = JSON.stringify(contas);
+
+        await fs.writeFile('./src/database/contas.json', contasString);
+
+        return res.status(204).send();
+    } catch (erro) {
+        return res.status(500).json({ mensagem: erro.message });
+    }
+}
+
+const excluirContaBancaria = async function (req, res) {
+    const { id } = req.params;
+
+    try {
+        const contaBuscadaParaExcluir = await buscaContaPorId(id);
+
+        if (!contaBuscadaParaExcluir) {
+            return res.status(404).json({ mensagem: "Esta conta não existe! Retorne um ID de uma conta existente." });
+        }
+
+        if (contaBuscadaParaExcluir.saldo !== 0) {
+            return res.status(403).json({ mensagem: "A conta só pode ser removida se o saldo for zero!" });
+        }
+
+        contas = contas.filter(function (conta) {
+            return conta.id !== parseInt(id);
+        });
+
+        const contasString = JSON.stringify(contas);
+
+        await fs.writeFile('./src/database/contas.json', contasString);
+
         return res.status(204).send();
     } catch (erro) {
         return res.status(500).json({ mensagem: erro.message });
@@ -78,5 +116,6 @@ const atualizarContaBancaria = async function (req, res) {
 module.exports = {
     listarContasBancarias,
     criarContaBancaria,
-    atualizarContaBancaria
+    atualizarContaBancaria,
+    excluirContaBancaria
 }
