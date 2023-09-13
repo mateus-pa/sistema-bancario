@@ -1,6 +1,7 @@
 const contas = require('./contas.json');
 const identificadorConta = require('./identificadorConta.json');
 const depositos = require('./depositos.json');
+const saques = require('./saques.json');
 
 module.exports = {
     identificadorConta,
@@ -11,7 +12,7 @@ module.exports = {
         senha: 'Cubos123Bank'
     },
     contas: [...contas],
-    saques: [],
+    saques: [...saques],
     depositos: [...depositos],
     transferencias: []
 }
