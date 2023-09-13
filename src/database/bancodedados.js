@@ -1,5 +1,6 @@
 const contas = require('./contas.json');
 const identificadorConta = require('./identificadorConta.json');
+const depositos = require('./depositos.json');
 
 module.exports = {
     identificadorConta,
@@ -11,6 +12,6 @@ module.exports = {
     },
     contas: [...contas],
     saques: [],
-    depositos: [],
+    depositos: [...depositos],
     transferencias: []
 }

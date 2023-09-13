@@ -12,7 +12,7 @@ const validadorSenha = function (req, res, next) {
     next();
 }
 
-const verificaBodyPreenchido = function (req, res, next) {
+const verificaBodyPreenchidoContas = function (req, res, next) {
     const { nome, cpf, data_nascimento, telefone, email, senha } = req.body;
 
     if (!nome) {
@@ -58,6 +58,6 @@ const verificaIdConta = function (req, res, next) {
 
 module.exports = {
     validadorSenha,
-    verificaBodyPreenchido,
+    verificaBodyPreenchidoContas,
     verificaIdConta
 }
