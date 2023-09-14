@@ -2,6 +2,7 @@ const contas = require('./contas.json');
 const identificadorConta = require('./identificadorConta.json');
 const depositos = require('./depositos.json');
 const saques = require('./saques.json');
+const transferencias = require('./transferencias.json');
 
 module.exports = {
     identificadorConta,
@@ -14,5 +15,5 @@ module.exports = {
     contas: [...contas],
     saques: [...saques],
     depositos: [...depositos],
-    transferencias: []
+    transferencias: [...transferencias]
 }

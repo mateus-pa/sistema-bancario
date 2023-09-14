@@ -3,9 +3,9 @@ const express = require('express');
 const rotas = express();
 
 const { listarContasBancarias, criarContaBancaria, atualizarContaBancaria, excluirContaBancaria } = require('./controllers/contasControllers');
-const { depositarDinheiroEmContaBancaria, sacarDinheiroEmContaBancaria } = require('./controllers/transacoesControllers');
+const { depositarDinheiroEmContaBancaria, sacarDinheiroEmContaBancaria, transferirDinheiroEntreContasBancarias } = require('./controllers/transacoesControllers');
 const { validadorSenha, verificaBodyPreenchidoContas, verificaIdConta } = require('./middlewares/contasMiddlewares');
-const { verificaSenhaBodyTransacoes, verificaBodyPreenchidoTransacoes } = require('./middlewares/transacoesBancariasMiddlewares');
+const { verificaSenhaBodyTransacoes, verificaBodyNumeroContaTransacoes, verificaBodyValoresTransacoes } = require('./middlewares/transacoesBancariasMiddlewares');
 
 // contas
 rotas.get('/contas', validadorSenha, listarContasBancarias);
@@ -14,7 +14,8 @@ rotas.put('/contas/:id/usuario', verificaIdConta, verificaBodyPreenchidoContas, 
 rotas.delete('/contas/:id', verificaIdConta, excluirContaBancaria);
 
 // transacoes
-rotas.post('/transacoes/depositar', verificaBodyPreenchidoTransacoes, depositarDinheiroEmContaBancaria);
-rotas.post('/transacoes/sacar', verificaSenhaBodyTransacoes, verificaBodyPreenchidoTransacoes, sacarDinheiroEmContaBancaria);
+rotas.post('/transacoes/depositar', verificaBodyNumeroContaTransacoes, verificaBodyValoresTransacoes, depositarDinheiroEmContaBancaria);
+rotas.post('/transacoes/sacar', verificaSenhaBodyTransacoes, verificaBodyNumeroContaTransacoes, verificaBodyValoresTransacoes, sacarDinheiroEmContaBancaria);
+rotas.post('/transacoes/transferir', verificaSenhaBodyTransacoes, verificaBodyValoresTransacoes, transferirDinheiroEntreContasBancarias);
 
 module.exports = rotas;

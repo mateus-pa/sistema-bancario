@@ -1,4 +1,4 @@
-let { contas, depositos, saques } = require('../database/bancodedados');
+let { contas, depositos, saques, transferencias } = require('../database/bancodedados');
 const { buscaContaPorId } = require('../services/funcoesContas');
 
 const fs = require('fs/promises');
@@ -82,7 +82,69 @@ const sacarDinheiroEmContaBancaria = async function (req, res) {
     }
 }
 
+const transferirDinheiroEntreContasBancarias = async function (req, res) {
+    const { numero_conta_origem, numero_conta_destino, valor, senha } = req.body;
+
+    try {
+        if (!numero_conta_origem) {
+            return res.status(400).json({ mensagem: "Informe um número referente a conta de origem para que seja possível fazer a transação." });
+        }
+
+        if (!numero_conta_destino) {
+            return res.status(400).json({ mensagem: "Informe um número referente a conta de destino para que seja possível fazer a transação." });
+        }
+
+        const contaBuscadaDeOrigem = await buscaContaPorId(numero_conta_origem);
+
+        if (!contaBuscadaDeOrigem) {
+            return res.status(404).json({ mensagem: "Esta conta de origem não existe! Retorne um número da conta(ID) de uma conta existente." });
+        }
+
+        const contaBuscadaDeDestino = await buscaContaPorId(numero_conta_destino);
+
+        if (!contaBuscadaDeDestino) {
+            return res.status(404).json({ mensagem: "Esta conta de destino não existe! Retorne um número da conta(ID) de uma conta existente." });
+        }
+
+        if (contaBuscadaDeOrigem.usuario.senha !== senha) {
+            return res.status(401).json({ mensagem: "Senha incorreta! Informe a senha da conta de origem correta para que seja possível fazer a transação." });
+        }
+
+        if (contaBuscadaDeOrigem.saldo < parseInt(valor)) {
+            return res.status(400).json({ mensagem: "Saldo insuficiente! Informe um valor válido para ser transferido." });
+        }
+
+        contaBuscadaDeOrigem.saldo -= parseInt(valor);
+        contaBuscadaDeDestino.saldo += parseInt(valor);
+
+        let data = new Date();
+        data = format(data, 'yyyy-MM-dd HH:mm:ss');
+
+        const novaTransferencia = {
+            data,
+            numero_conta_origem,
+            numero_conta_destino,
+            valor: parseInt(valor)
+        }
+
+        transferencias.push(novaTransferencia);
+
+        const contasString = JSON.stringify(contas);
+        const transferenciasString = JSON.stringify(transferencias);
+
+        await fs.writeFile('./src/database/contas.json', contasString);
+        await fs.writeFile('./src/database/transferencias.json', transferenciasString);
+
+        console.log(transferencias);
+
+        return res.status(204).send();
+    } catch (erro) {
+        return res.status(500).json({ mensagem: erro.message });
+    }
+}
+
 module.exports = {
     depositarDinheiroEmContaBancaria,
-    sacarDinheiroEmContaBancaria
+    sacarDinheiroEmContaBancaria,
+    transferirDinheiroEntreContasBancarias
 }

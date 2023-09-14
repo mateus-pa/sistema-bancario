@@ -8,19 +8,11 @@ const verificaSenhaBodyTransacoes = function (req, res, next) {
     next();
 }
 
-const verificaBodyPreenchidoTransacoes = function (req, res, next) {
-    const { numero_conta, valor } = req.body;
-
-    if (!numero_conta) {
-        return res.status(400).json({ mensagem: "Informe o número da conta(ID) para que seja possível fazer a transação." });
-    }
+const verificaBodyValoresTransacoes = function (req, res, next) {
+    const { valor } = req.body;
 
     if (!valor) {
         return res.status(400).json({ mensagem: "Informe um valor para que seja possível fazer a transação." });
-    }
-
-    if (isNaN(numero_conta)) {
-        return res.status(400).json({ mensagem: "O numero da conta(ID) precisa ser composto apenas por valores numéricos para efetuar a transação." });
     }
 
     if (isNaN(valor)) {
@@ -34,7 +26,22 @@ const verificaBodyPreenchidoTransacoes = function (req, res, next) {
     next();
 }
 
+const verificaBodyNumeroContaTransacoes = function (req, res, next) {
+    const { numero_conta } = req.body;
+
+    if (!numero_conta) {
+        return res.status(400).json({ mensagem: "Informe o número da conta(ID) para que seja possível fazer a transação." });
+    }
+
+    if (isNaN(numero_conta)) {
+        return res.status(400).json({ mensagem: "O numero da conta(ID) precisa ser composto apenas por valores numéricos para efetuar a transação." });
+    }
+
+    next();
+}
+
 module.exports = {
     verificaSenhaBodyTransacoes,
-    verificaBodyPreenchidoTransacoes
+    verificaBodyValoresTransacoes,
+    verificaBodyNumeroContaTransacoes
 }

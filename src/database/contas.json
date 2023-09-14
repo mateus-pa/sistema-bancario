@@ -1,1 +1,1 @@
-[{"id":1,"saldo":0,"usuario":{"nome":"Foo Bar 2","cpf":"00011122234","data_nascimento":"2021-03-15","telefone":"71999998888","email":"foo@bar2.com","senha":"123456"}}]
+[{"id":1,"saldo":1900,"usuario":{"nome":"Foo Bar 2","cpf":"00011122234","data_nascimento":"2021-03-15","telefone":"71999998888","email":"foo@bar2.com","senha":"123456"}},{"id":2,"saldo":200,"usuario":{"nome":"Mateus","cpf":"34356789123","data_nascimento":"2021-03-15","telefone":"71999998888","email":"tecas4@bar.com","senha":"12345"}}]
