@@ -113,9 +113,39 @@ const excluirContaBancaria = async function (req, res) {
     }
 }
 
+const exibirSaldoContaBancaria = async function (req, res) {
+    const { numero_conta, senha } = req.query;
+
+    try {
+        if (!numero_conta) {
+            return res.status(400).json({ mensagem: "Informe um número da conta(ID) para que seja possível exibir o saldo." });
+        }
+
+        if (!senha) {
+            return res.status(400).json({ mensagem: "Informe uma senha para que seja possível exibir o saldo." });
+        }
+
+        const contaBuscadaParaExibir = await buscaContaPorId(numero_conta);
+
+        if (!contaBuscadaParaExibir) {
+            return res.status(404).json({ mensagem: "Esta conta não existe! Retorne um número da conta(ID) de uma conta existente." });
+        }
+
+        if (contaBuscadaParaExibir.usuario.senha !== senha) {
+            return res.status(401).json({ mensagem: "Senha incorreta! Informe a senha da conta correta para que seja possível exibir o seu saldo." });
+        }
+
+        return res.status(200).json({ saldo: contaBuscadaParaExibir.saldo });
+    } catch (erro) {
+        return res.status(500).json({ mensagem: erro.message });
+    }
+
+}
+
 module.exports = {
     listarContasBancarias,
     criarContaBancaria,
     atualizarContaBancaria,
-    excluirContaBancaria
+    excluirContaBancaria,
+    exibirSaldoContaBancaria
 }
