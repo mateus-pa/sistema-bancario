@@ -40,10 +40,19 @@ const buscaIndiceEmailIgual = async function (email) {
     return posicaoContaEmailIgual;
 }
 
+const filtraNumeroContaIgual = async function (identificadorDaConta, arrayTransacoes) {
+    const numeroContaIgual = arrayTransacoes.filter(function (objTransacao) {
+        return identificadorDaConta === objTransacao.numero_conta;
+    });
+
+    return numeroContaIgual;
+}
+
 module.exports = {
     buscaCpf,
     buscaEmail,
     buscaContaPorId,
     buscaIndiceCpfIgual,
-    buscaIndiceEmailIgual
+    buscaIndiceEmailIgual,
+    filtraNumeroContaIgual
 }

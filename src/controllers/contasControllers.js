@@ -1,5 +1,5 @@
-let { contas, identificadorConta } = require('../database/bancodedados');
-const { buscaCpf, buscaEmail, buscaContaPorId, buscaIndiceCpfIgual, buscaIndiceEmailIgual } = require('../services/funcoesContas');
+let { contas, identificadorConta, depositos, saques, transferencias } = require('../database/bancodedados');
+const { buscaCpf, buscaEmail, buscaContaPorId, buscaIndiceCpfIgual, buscaIndiceEmailIgual, filtraNumeroContaIgual } = require('../services/funcoesContas');
 const fs = require('fs/promises');
 
 const listarContasBancarias = async function (req, res) {
@@ -117,14 +117,6 @@ const exibirSaldoContaBancaria = async function (req, res) {
     const { numero_conta, senha } = req.query;
 
     try {
-        if (!numero_conta) {
-            return res.status(400).json({ mensagem: "Informe um número da conta(ID) para que seja possível exibir o saldo." });
-        }
-
-        if (!senha) {
-            return res.status(400).json({ mensagem: "Informe uma senha para que seja possível exibir o saldo." });
-        }
-
         const contaBuscadaParaExibir = await buscaContaPorId(numero_conta);
 
         if (!contaBuscadaParaExibir) {
@@ -139,7 +131,41 @@ const exibirSaldoContaBancaria = async function (req, res) {
     } catch (erro) {
         return res.status(500).json({ mensagem: erro.message });
     }
+}
 
+const exibirExtratoContaBancaria = async function (req, res) {
+    const { numero_conta, senha } = req.query;
+
+    try {
+        const contaBuscadaParaExibir = await buscaContaPorId(numero_conta);
+
+        if (!contaBuscadaParaExibir) {
+            return res.status(404).json({ mensagem: "Esta conta não existe! Retorne um número da conta(ID) de uma conta existente." });
+        }
+
+        if (contaBuscadaParaExibir.usuario.senha !== senha) {
+            return res.status(401).json({ mensagem: "Senha incorreta! Informe a senha da conta correta para que seja possível exibir o seu extrato." });
+        }
+
+        const numeroContaIgualOrigem = transferencias.filter(function (transferencia) {
+            return numero_conta === transferencia.numero_conta_origem;
+        });
+
+        const numeroContaIgualDestino = transferencias.filter(function (transferencia) {
+            return numero_conta === transferencia.numero_conta_destino;
+        });
+
+        const extratoConta = {
+            depositos: await filtraNumeroContaIgual(numero_conta, depositos),
+            saques: await filtraNumeroContaIgual(numero_conta, saques),
+            transferenciasEnviadas: numeroContaIgualOrigem,
+            transferenciasRecebidas: numeroContaIgualDestino
+        }
+
+        return res.status(200).json(extratoConta);
+    } catch (erro) {
+        return res.status(500).json({ mensagem: erro.message });
+    }
 }
 
 module.exports = {
@@ -147,5 +173,6 @@ module.exports = {
     criarContaBancaria,
     atualizarContaBancaria,
     excluirContaBancaria,
-    exibirSaldoContaBancaria
+    exibirSaldoContaBancaria,
+    exibirExtratoContaBancaria
 }

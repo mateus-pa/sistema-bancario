@@ -56,8 +56,23 @@ const verificaIdConta = function (req, res, next) {
     next();
 }
 
+const verificaQueryParamsConta = function (req, res, next) {
+    const { numero_conta, senha } = req.query;
+
+    if (!numero_conta) {
+        return res.status(400).json({ mensagem: "Informe um número da conta(ID) para que seja possível exibir o saldo." });
+    }
+
+    if (!senha) {
+        return res.status(400).json({ mensagem: "Informe uma senha para que seja possível exibir o saldo." });
+    }
+
+    next();
+}
+
 module.exports = {
     validadorSenha,
     verificaBodyPreenchidoContas,
-    verificaIdConta
+    verificaIdConta,
+    verificaQueryParamsConta
 }
