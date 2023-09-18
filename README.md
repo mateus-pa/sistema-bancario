@@ -4,7 +4,7 @@
 
 ## 📝Sobre
 
-Projeto de finalização do segundo módulo do curso de desenvolvimento de software, com foco em Back-end, da Cubos academy. Este projeto visa exercitar e avaliar todos os conhecimentos adquiridos ao longo do módulo 2 do curso (API REST), sendo alguns desses conceitos:
+Projeto de finalização do segundo módulo do curso de desenvolvimento de software, com foco em Back-end, da Cubos Academy. Este projeto visa exercitar e avaliar todos os conhecimentos adquiridos ao longo do módulo 2 do curso (API REST), sendo alguns desses conceitos:
 - API Rest
 - Programação assíncrona
 - Function Async/await
